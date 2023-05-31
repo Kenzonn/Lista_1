@@ -1,0 +1,44 @@
+import pandas as pd
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_excel('retorno.xlsx')
+df.info()
+
+y = df['retorno'] #Variavel Dependente
+x = df[['bktmkt', 'beta', 'INV', 'ROA']] #Variaveis explicativas
+
+modelo = LinearRegression()
+modelo.fit(x, y)   #criação do modelo
+
+r_quad = modelo.score(x, y)
+
+print(r_quad) # O R^2 levemente positivo indica que o retorno varia levemente na mesma direção em que as outras variaveis
+
+modelo2 = sm.OLS(y, x).fit()
+
+modelo2.summary() 
+
+confianca = 0.95  
+limiar = 0.05
+
+for name, value in modelo2.pvalues.items():
+    if value < limiar:
+        print(f"{name} é significativo.")
+    else:
+        print(f"{name} não é significativo.")
+
+
+y = df['retorno'] #Variavel Dependente
+x = df[['beta', 'INV', 'ROA']]
+
+modelo3 = LinearRegression()
+modelo3.fit(x, y)   #criação do modelo
+
+r_quad = modelo3.score(x, y)
+
+print(r_quad)
+
+modelo4 = sm.OLS(y, x).fit()
+
+modelo4.summary()
